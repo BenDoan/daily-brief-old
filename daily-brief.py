@@ -5,6 +5,7 @@ import datetime
 import json
 import os
 
+import feedparser
 import httplib2
 import requests
 
@@ -112,12 +113,6 @@ def get_events():
     events = eventsResult.get('items', [])
 
     return events
-
-    # if not events:
-    #     print('No upcoming events found.')
-    # for event in events:
-    #     start = event['start'].get('dateTime', event['start'].get('date'))
-    #     print(start, event['summary'])
 
 
 tpl_path = os.path.join(get_script_rel_path("templates"))
