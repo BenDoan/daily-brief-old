@@ -1,5 +1,5 @@
 % rebase('base.tpl', title=title)
-<h2>Brief</h2>
+<h2>Brief - {{ today.strftime("%A %Y-%m-%d") }}</h2>
 <div class="row">
     % for period in weather_data['properties']['periods'][:5]:
     <span class="weather-day col-md-2">
@@ -18,9 +18,9 @@
 
 <div class="row">
     <ul>
-        % for event in events:
+        % for event in todays_events:
             <li>
-                {{ event['summary'] }}: {{ event['start'].get('dateTime', event['start'].get('date')) }}
+                {{ event['summary'] }}: {{ event['time'].strftime('%A %I:%M %p') }}
             </li>
         % end
     </ul>

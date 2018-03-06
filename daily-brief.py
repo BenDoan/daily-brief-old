@@ -9,6 +9,8 @@ import feedparser
 import httplib2
 import requests
 
+import dateutil.parser
+
 from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
@@ -35,17 +37,23 @@ CLIENT_SECRET_FILE = 'private/client_id.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
+def isoToDatetime(iso_str):
+    return dateutil.parser.parse(iso_str)
+
+
 @get('/')
 def index():
-    events = get_events()
-    weather_data = get_weather_data()
-    menu_img_url = get_menu_url()
+    data = dict(
+        todays_events=get_todays_events(),
+        weather_data=get_weather_data(),
+        menu_img_url=get_menu_url(),
+        today=datetime.datetime.now(),
+    )
+
     return template(
         "index.tpl",
         title="index",
-        weather_data=weather_data,
-        events=events,
-        menu_img_url=menu_img_url
+        **data
     )
 
 
@@ -100,17 +108,25 @@ def get_menu_url():
     return get_menu_img(today, "Lunch")
 
 
-def get_events():
+def get_todays_events():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
+    now = datetime.datetime.utcnow()
+    tommorow = now + datetime.timedelta(days=1)
     eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
-        orderBy='startTime').execute()
+        calendarId='primary',
+        timeMin=now.isoformat() + 'Z',
+        timeMax=tommorow.isoformat() + 'Z',
+        maxResults=20,
+        singleEvents=True,
+        orderBy='startTime',
+    ).execute()
     events = eventsResult.get('items', [])
+
+    for event in events:
+        event['time'] = isoToDatetime(event['start'].get('dateTime', event['start'].get('date')))
 
     return events
 
