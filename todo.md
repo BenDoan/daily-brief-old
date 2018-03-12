@@ -1,0 +1,3 @@
+- Add temperature graph for current day
+- Add high/low temp for current day
+- Use space more efficiently
