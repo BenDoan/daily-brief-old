@@ -142,12 +142,13 @@ def get_event_for_day(date):
 
 
 def get_events():
+    days_in_advance = 3
+    events = {}
     now = datetime.datetime.utcnow()
-    tommorow = datetime.datetime.now() + datetime.timedelta(days=1)
-    return {
-        now.strftime("%A"): get_event_for_day(now.date()),
-        tommorow.strftime("%A"): get_event_for_day(tommorow.date()),
-    }
+    for d in range(days_in_advance):
+        tm = now + datetime.timedelta(days=d)
+        events[tm.strftime("%A")] = get_event_for_day(tm.date())
+    return events
 
 
 def get_news():
