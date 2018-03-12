@@ -142,8 +142,11 @@ def get_event_for_day(date):
 
 
 def get_events():
+    now = datetime.datetime.utcnow()
+    tommorow = datetime.datetime.now() + datetime.timedelta(days=1)
     return {
-        datetime.datetime.now().strftime("%A"): get_event_for_day(datetime.datetime.utcnow().date())
+        now.strftime("%A"): get_event_for_day(now.date()),
+        tommorow.strftime("%A"): get_event_for_day(tommorow.date()),
     }
 
 
