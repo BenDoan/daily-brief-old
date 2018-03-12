@@ -17,11 +17,21 @@
 </div>
 
 <div class="row">
+    % for day, entries in events.items():
+        <h3>Events - {{ day }}</h3>
+        <ul>
+            % for event in entries:
+                <li>{{ event['time'].strftime('%I:%M %p') }} {{ event['summary'] }}</li>
+            % end
+        </ul>
+    % end
+</div>
+
+<h4>News</h4>
+<div class="row">
     <ul>
-        % for event in todays_events:
-            <li>
-                {{ event['summary'] }}: {{ event['time'].strftime('%A %I:%M %p') }}
-            </li>
+        % for news_entry in news:
+        <li><a href="{{ news_entry['link'] }}>{{ news_entry['title'] }}</a></li>
         % end
     </ul>
 </div>

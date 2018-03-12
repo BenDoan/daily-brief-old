@@ -31,23 +31,33 @@ from lib.bottle import (
 from get_menu_img import get_menu_img
 
 WEATHER_URL = "https://api.weather.gov/points/41.252363,-95.997988/forecast"
+NEWS_FEED = "http://rss.nytimes.com/services/xml/rss/nyt/US.xml"
 
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 CLIENT_SECRET_FILE = 'private/client_id.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
-def isoToDatetime(iso_str):
+def iso_to_datetime(iso_str):
     return dateutil.parser.parse(iso_str)
+
+
+def date_to_datetime(date):
+    return datetime.datetime(year=date.year, month=date.month, day=date.day)
+
+
+def get_end_of_day(dt):
+    return datetime.datetime(dt.year, dt.month, dt.day, 23, 59, 59, 999999)
 
 
 @get('/')
 def index():
     data = dict(
-        todays_events=get_todays_events(),
+        events=get_events(),
         weather_data=get_weather_data(),
         menu_img_url=get_menu_url(),
         today=datetime.datetime.now(),
+        news=get_news(),
     )
 
     return template(
@@ -108,17 +118,17 @@ def get_menu_url():
     return get_menu_img(today, "Lunch")
 
 
-def get_todays_events():
+def get_event_for_day(date):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    now = datetime.datetime.utcnow()
-    tommorow = now + datetime.timedelta(days=1)
+    start = date_to_datetime(date)
+    end = get_end_of_day(start)
     eventsResult = service.events().list(
         calendarId='primary',
-        timeMin=now.isoformat() + 'Z',
-        timeMax=tommorow.isoformat() + 'Z',
+        timeMin=start.isoformat() + 'Z',
+        timeMax=end.isoformat() + 'Z',
         maxResults=20,
         singleEvents=True,
         orderBy='startTime',
@@ -126,9 +136,20 @@ def get_todays_events():
     events = eventsResult.get('items', [])
 
     for event in events:
-        event['time'] = isoToDatetime(event['start'].get('dateTime', event['start'].get('date')))
+        event['time'] = iso_to_datetime(event['start'].get('dateTime', event['start'].get('date')))
 
     return events
+
+
+def get_events():
+    return {
+        datetime.datetime.now().strftime("%A"): get_event_for_day(datetime.datetime.utcnow().date())
+    }
+
+
+def get_news():
+    d = feedparser.parse(NEWS_FEED)
+    return d['entries']
 
 
 tpl_path = os.path.join(get_script_rel_path("templates"))
@@ -150,4 +171,3 @@ if __name__ == '__main__':
     run(host='0.0.0.0', port=config['port'], reloader=True)
 
 app = default_app()
-
