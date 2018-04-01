@@ -31,7 +31,7 @@
 <div class="row">
     <ul>
         % for news_entry in news:
-        <li><a href="{{ news_entry['link'] }}>{{ news_entry['title'] }}"</a></li>
+        <li><a href="{{ news_entry['link'] }}">{{ news_entry['title'] }}</a></li>
         % end
     </ul>
 </div>

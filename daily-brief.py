@@ -31,7 +31,7 @@ from lib.bottle import (
 from get_menu_img import get_menu_img
 
 WEATHER_URL = "https://api.weather.gov/points/41.252363,-95.997988/forecast"
-NEWS_FEED = "http://rss.nytimes.com/services/xml/rss/nyt/US.xml"
+NEWS_FEED = "http://feeds.reuters.com/reuters/topNews"
 
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 CLIENT_SECRET_FILE = 'private/client_id.json'
