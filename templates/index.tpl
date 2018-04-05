@@ -41,6 +41,10 @@
 <img src="https://forecast.weather.gov/meteograms/Plotter.php?lat=41.3024&lon=-96.0158&wfo=OAX&zcode=NEZ052&gset=18&gdiff=6&unit=0&tinfo=CY6&ahour=0&pcmd=11011111111110000000000000000000000000000000000000000000000&lg=en&indu=1!1!1!&dd=&bw=&hrspan=48&pqpfhr=6&psnwhr=6" />
 </div>
 
+<br/>
+
+<img src="http://www2.dor.state.ne.us/webcams/newImages/vid-I80at42nd.jpg" >
+
 <style>
 .weather-day {
     background-color: #eee;
